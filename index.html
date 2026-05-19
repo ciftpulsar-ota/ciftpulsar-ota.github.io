@@ -78,7 +78,6 @@
             margin: 0;
         }
 
-        /* Endüstriyel Mod Seçim Segmenti */
         .segment-control {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -115,7 +114,6 @@
             border: 1px solid rgba(139, 92, 246, 0.3);
         }
 
-        /* Butonlar */
         .btn {
             display: block;
             width: 100%;
@@ -144,12 +142,7 @@
             border-color: rgba(16, 185, 129, 0.4);
             cursor: default;
         }
-        
-        .btn.connected:hover {
-            background: rgba(16, 185, 129, 0.15);
-        }
 
-        /* Sürükle-Bırak / Dosya Seçim Alanı */
         .drop-zone {
             border: 1px dashed var(--border-color);
             background: #030712;
@@ -176,7 +169,6 @@
             display: none;
         }
 
-        /* Tetikleme Butonu */
         .btn-trigger {
             background: #2563eb;
             color: #ffffff;
@@ -190,7 +182,6 @@
             box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
         }
 
-        /* Versiyon Notları Menü Alanı (Birleştirilmiş & İyileştirilmiş) */
         .version-menu {
             display: none;
             margin-bottom: 16px;
@@ -244,7 +235,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* İlerleme Paneli */
         .progress-container {
             display: none;
             margin-top: 16px;
@@ -282,33 +272,27 @@
 <body>
 
 <div class="terminal-container">
-    <!-- Logo Alanı -->
     <div class="logo-wrapper">
         <img src="pulsar-logo.png" alt="Çift Pulsar Logo" onerror="this.style.display='none'">
     </div>
     
-    <!-- Başlık -->
     <div class="header-group">
         <h1>ÇİFT PULSAR v2</h1>
         <p class="subtitle">BLE Firmware Güncelleme Terminali</p>
     </div>
 
-    <!-- Mod Seçimi -->
     <div class="segment-control">
         <button class="segment-btn active quick" id="mQ" onclick="toggleMode('QUICK')">HIZLI MOD (480B)</button>
         <button class="segment-btn" id="mE" onclick="toggleMode('EFFICIENT')">GÜVENLİ MOD (64B)</button>
     </div>
 
-    <!-- Bağlantı Butonu -->
     <button class="btn" id="connBtn" onclick="initBluetooth()">Cihaza Bağlan</button>
 
-    <!-- Dosya Seçim Alanı -->
     <div class="drop-zone" onclick="document.getElementById('fileInp').click()">
         <span id="fileTxt" class="drop-zone-text">Firmware (.bin) dosyasını seçin</span>
         <input type="file" id="fileInp" accept=".bin" onchange="onFileSelect()">
     </div>
 
-    <!-- Dinamik Sürüm Notları (JSON Destekli Accordion) -->
     <div class="version-menu" id="versionMenu">
         <div class="version-header" onclick="toggleDetails()">
             <span id="vTitle">ℹ️ Sürüm Bilgileri Aranıyor...</span>
@@ -317,10 +301,8 @@
         <div class="version-body" id="vBody">Veriler yükleniyor, lütfen bekleyin...</div>
     </div>
 
-    <!-- Güncellemeyi Başlat Butonu -->
     <button class="btn btn-trigger" id="upBtn" onclick="pushUpdate()" style="display: none;">GÜNCELLEMEYİ BAŞLAT</button>
 
-    <!-- İlerleme Çubuğu -->
     <div class="progress-container" id="progBox">
         <div class="progress-bar-bg">
             <div class="progress-bar-fill" id="bar"></div>
@@ -330,14 +312,12 @@
 </div>
 
 <script>
-    // Bluetooth Servis ID'leri
     const S_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
     const C_DATA = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
     const C_CTRL = "e32ee5ee-ca2a-4124-a69c-f9964ca72412";
 
     let device = null, dChar = null, cChar = null, file = null, mode = 'QUICK';
 
-    // UI: Mod Değişimi
     function toggleMode(m) {
         mode = m;
         document.getElementById('mQ').classList.toggle('active', m === 'QUICK');
@@ -346,7 +326,6 @@
         document.getElementById('mE').classList.toggle('eff', m === 'EFFICIENT');
     }
 
-    // UI: Sürüm Detayları (Accordion) Animasyonu
     function toggleDetails() {
         const body = document.getElementById('vBody');
         const arrow = document.getElementById('vArrow');
@@ -360,26 +339,23 @@
         }
     }
 
-    // Dosya Seçimi ve JSON Fetch İşlemi
     async function onFileSelect() {
         const inp = document.getElementById('fileInp');
         if(inp.files.length > 0) {
             file = inp.files[0];
             
-            // UI Güncelleme (Dosya İsmi ve Boyutu)
             const fText = document.getElementById('fileTxt');
             fText.innerText = `${file.name} [${Math.round(file.size/1024)} KB]`;
             fText.style.color = "var(--accent-cyan)";
             
-            // Versiyon Menüsünü Görünür Yap ve Yükleniyor Durumu Ver
             document.getElementById('versionMenu').style.display = 'block';
             document.getElementById('vTitle').innerText = "⏳ Sürüm notları getiriliyor...";
             
-            // JSON Çekme İşlemi (CORS veya Hata İhtimalleri İçin Try-Catch)
-            const pastebinRawUrl = "https://pastebin.com/raw/SENIN_PASTE_IDN"; // ID'yi Buraya Yazın
+            // GITHUB GIST RAW LINKINI BURAYA YAPISTIRIN:
+            const gistRawUrl = "Buraya_Gist_RAW_Linkini_Yapistirin"; 
             
             try {
-                const response = await fetch(pastebinRawUrl);
+                const response = await fetch(gistRawUrl);
                 
                 if (!response.ok) throw new Error("Ağ yanıtı başarılı değil.");
                 
@@ -389,18 +365,15 @@
                 document.getElementById('vBody').innerText = data.Guncelleme_Detay || "Detay bulunamadı.";
             } catch (e) {
                 console.warn("Sürüm notları yüklenemedi:", e);
-                // Hata durumunda arayüzün bozulmaması için yedek metin
                 document.getElementById('vTitle').innerText = "⚠️ Sürüm Notları Okunamadı";
                 document.getElementById('vTitle').style.color = "var(--danger)";
-                document.getElementById('vBody').innerText = "Ağ hatası veya Pastebin erişim kısıtlaması (CORS) nedeniyle sürüm notları getirilemedi. Ancak güncelleme işleminize devam edebilirsiniz.";
+                document.getElementById('vBody').innerText = "Ağ hatası veya yanlış bağlantı nedeniyle sürüm notları getirilemedi. Ancak güncelleme işleminize devam edebilirsiniz.";
             }
 
-            // Eğer cihaz bağlıysa Başlat butonunu göster
             if(device) document.getElementById('upBtn').style.display = 'block';
         }
     }
 
-    // Bluetooth Bağlantı İşlemi
     async function initBluetooth() {
         const statusText = document.getElementById('status');
         const connBtn = document.getElementById('connBtn');
@@ -432,7 +405,6 @@
         }
     }
 
-    // Firmware Güncelleme (Veri Gönderme)
     async function pushUpdate() {
         if(!file || !cChar || !dChar) return;
         
@@ -442,22 +414,19 @@
         const statusText = document.getElementById('status');
         const barFill = document.getElementById('bar');
         
-        // Mod rengine göre ilerleme çubuğu rengini ayarla
         barFill.style.background = mode === 'QUICK' ? "var(--accent-cyan)" : "var(--accent-purple)";
 
-        // Hazırlık Paketi (Control Char)
         const obfuscatedName = btoa(unescape(encodeURIComponent(file.name)));
         const startPacket = `START:${obfuscatedName}:${file.size}:${mode}:`;
         await cChar.writeValueWithResponse(new TextEncoder().encode(startPacket));
 
-        // Dosyayı Oku ve Gönder
         const reader = new FileReader();
         reader.onload = async function(e) {
             const buffer = new Uint8Array(e.target.result);
             const chunkSize = (mode === 'QUICK') ? 480 : 64;
             let pointer = 0;
 
-            statusText.style.color = "var(--text-muted)"; // Rengi normale al (önceki hatalardan kalma ihtimaline karşı)
+            statusText.style.color = "var(--text-muted)";
 
             while(pointer < buffer.length) {
                 const chunk = buffer.slice(pointer, pointer + chunkSize);
@@ -480,7 +449,6 @@
                 barFill.style.width = progress + '%';
                 statusText.innerText = `Veri transferi: %${progress}`;
                 
-                // Hızlı Mod Gecikmesi
                 if(mode === 'QUICK') await new Promise(r => setTimeout(r, 2));
             }
 
