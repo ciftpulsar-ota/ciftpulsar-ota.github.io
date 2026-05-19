@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ÇİFT PULSAR v2 // Ota Control Terminal</title>
+    <style>
+        :root {
+            --bg-main: #090d16;
+            --bg-panel: #111827;
+            --border-color: #1f2937;
+            --border-focus: #3b82f6;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --accent-cyan: #06b6d4;
+            --accent-purple: #8b5cf6;
+            --success: #10b981;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .terminal-container {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 32px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 1000x500 Geniş Logolar İçin Optimize Edilmiş Alan */
+        .logo-wrapper {
+            width: 100%;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo-wrapper img {
+            width: 100%;
+            height: auto;
+            max-height: 180px; /* Orantıyı koruyarak taşmayı önler */
+            object-fit: contain;
+        }
+
+        .header-group {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        h1 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin: 0 0 6px 0;
+            color: var(--text-primary);
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        /* Endüstriyel Mod Seçim Segmenti */
+        .segment-control {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: #030712;
+            padding: 4px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .segment-btn {
+            background: transparent;
+            border: none;
+            outline: none;
+            padding: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .segment-btn.active.quick {
+            background: rgba(6, 182, 212, 0.15);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+
+        .segment-btn.active.eff {
+            background: rgba(139, 92, 246, 0.15);
+            color: var(--accent-purple);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        /* Butonlar */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: #1f2937;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: #374151;
+            border-color: #4b5563;
+        }
+
+        .btn.connected {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            border-color: rgba(16, 185, 129, 0.4);
+            cursor: default;
+        }
+
+        /* Sürükle-Bırak / Dosya Seçim Alanı */
+        .drop-zone {
+            border: 1px dashed var(--border-color);
+            background: #030712;
+            padding: 24px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            margin: 16px 0;
+            transition: border-color 0.15s ease;
+        }
+
+        .drop-zone:hover {
+            border-color: var(--border-focus);
+        }
+
+        .drop-zone-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Tetikleme Butonu */
+        .btn-trigger {
+            background: #2563eb;
+            color: #ffffff;
+            border: none;
+        }
+
+        .btn-trigger:hover {
+            background: #1d4ed8;
+        }
+
+        /* İlerleme Paneli */
+        .progress-container {
+            display: none;
+            margin-top: 20px;
+            background: #030712;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .progress-bar-bg {
+            background: #1f2937;
+            border-radius: 99px;
+            height: 6px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .progress-bar-fill {
+            background: var(--border-focus);
+            width: 0%;
+            height: 100%;
+            transition: width 0.1s linear;
+        }
+
+        .status-text {
+            font-size: 11px;
+            margin-top: 10px;
+            color: var(--text-muted);
+            text-align: left;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+<div class="terminal-container">
+    <!-- Optimize Edilmiş Yeni Logo Alanı -->
+    <div class="logo-wrapper">
+        <img src="pulsar-logo.png" alt="Çift Pulsar Logo">
+    </div>
+    
+    <div class="header-group">
+        <h1>ÇİFT PULSAR v2</h1>
+        <p class="subtitle">BLE Firmware Güncelleme Terminali</p>
+    </div>
+
+    <!-- Mod Seçimi -->
+    <div class="segment-control">
+        <button class="segment-btn active quick" id="mQ" onclick="toggleMode('QUICK')">HIZLI MOD (480B)</button>
+        <button class="segment-btn" id="mE" onclick="toggleMode('EFFICIENT')">GÜVENLİ MOD (64B)</button>
+    </div>
+
+    <!-- Bağlantı Butonu -->
+    <button class="btn" id="connBtn" onclick="initBluetooth()">Cihaza Bağlan</button>
+
+    <!-- Dosya Yükleme Alanı -->
+    <div class="drop-zone" onclick="document.getElementById('fileInp').click()">
+        <span id="fileTxt" class="drop-zone-text">Firmware (.bin) dosyasını seçin</span>
+        <input type="file" id="fileInp" accept=".bin" onchange="onFileSelect()">
+    </div>
+
+    <!-- İşlem Başlatma Butonu -->
+    <button class="btn btn-trigger" id="upBtn" onclick="pushUpdate()" style="display: none;">GÜNCELLEMEYİ BAŞLAT</button>
+
+    <!-- Durum ve İlerleme Çubuğu -->
+    <div class="progress-container" id="progBox">
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="bar"></div>
+        </div>
+        <div id="status" class="status-text">Bağlantı kararlı, dosya bekleniyor...</div>
+    </div>
+</div>
+
+<script>
+    const S_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
+    const C_DATA = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
+    const C_CTRL = "e32ee5ee-ca2a-4124-a69c-f9964ca72412";
+
+    let device = null, dChar = null, cChar = null, file = null, mode = 'QUICK';
+
+    function toggleMode(m) {
+        mode = m;
+        document.getElementById('mQ').classList.toggle('active', m === 'QUICK');
+        document.getElementById('mE').classList.toggle('active', m === 'EFFICIENT');
+        document.getElementById('mQ').classList.toggle('quick', m === 'QUICK');
+        document.getElementById('mE').classList.toggle('eff', m === 'EFFICIENT');
+    }
+
+    function onFileSelect() {
+        const inp = document.getElementById('fileInp');
+        if(inp.files.length > 0) {
+            file = inp.files[0];
+            document.getElementById('fileTxt').innerText = `${file.name} [${Math.round(file.size/1024)} KB]`;
+            document.getElementById('fileTxt').style.color = "var(--accent-cyan)";
+            if(device) document.getElementById('upBtn').style.display = 'block';
+        }
+    }
+
+    async function initBluetooth() {
+        try {
+            document.getElementById('status').innerText = "Cihaz aranıyor...";
+            device = await navigator.bluetooth.requestDevice({
+                filters: [{ namePrefix: 'PULSAR' }],
+                optionalServices: [S_UUID]
+            });
+            const server = await device.gatt.connect();
+            const service = await server.getPrimaryService(S_UUID);
+            dChar = await service.getCharacteristic(C_DATA);
+            cChar = await service.getCharacteristic(C_CTRL);
+
+            document.getElementById('connBtn').innerText = "Cihaz Bağlantısı Sağlandı ✓";
+            document.getElementById('connBtn').className = "btn connected";
+            if(file) document.getElementById('upBtn').style.display = 'block';
+        } catch (err) {
+            document.getElementById('status').innerText = "Hata: " + err.message;
+        }
+    }
+
+    async function pushUpdate() {
+        if(!file || !cChar || !dChar) return;
+        document.getElementById('progBox').style.display = 'block';
+        document.getElementById('upBtn').style.display = 'none';
+
+        const obfuscatedName = btoa(unescape(encodeURIComponent(file.name)));
+        const startPacket = `START:${obfuscatedName}:${file.size}:${mode}:`;
+        
+        await cChar.writeValueWithResponse(new TextEncoder().encode(startPacket));
+
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            const buffer = new Uint8Array(e.target.result);
+            const chunkSize = (mode === 'QUICK') ? 480 : 64;
+            let pointer = 0;
+
+            while(pointer < buffer.length) {
+                const chunk = buffer.slice(pointer, pointer + chunkSize);
+                
+                if(mode === 'QUICK') {
+                    await dChar.writeValueWithoutResponse(chunk);
+                } else {
+                    await dChar.writeValueWithResponse(chunk);
+                }
+
+                pointer += chunkSize;
+                const progress = Math.min(100, Math.round((pointer / buffer.length) * 100));
+                document.getElementById('bar').style.width = progress + '%';
+                document.getElementById('status').innerText = `Veri transferi: %${progress}`;
+                
+                if(mode === 'QUICK') await new Promise(r => setTimeout(r, 2));
+            }
+
+            document.getElementById('status').innerText = "Dosya gönderildi. Veri bütünlüğü doğrulanıyor...";
+            await cChar.writeValueWithResponse(new TextEncoder().encode("END"));
+            document.getElementById('status').innerText = "Güncelleme başarıyla tamamlandı.";
+        };
+        reader.readAsArrayBuffer(file);
+    }
+</script>
+</body>
+</html>
