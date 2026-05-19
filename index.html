@@ -339,6 +339,7 @@
         }
     }
 
+    // Dosya adından dinamik olarak Base64 çözen fonksiyon
     async function onFileSelect() {
         const inp = document.getElementById('fileInp');
         if(inp.files.length > 0) {
@@ -349,14 +350,29 @@
             fText.style.color = "var(--accent-cyan)";
             
             document.getElementById('versionMenu').style.display = 'block';
+            document.getElementById('vTitle').innerText = "⏳ Dosya adı çözülüyor...";
+
+            // 1. Adım: Dosya adından .bin uzantısını dinamik olarak ayır
+            const fileNameWithoutExt = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+            
+            let gistRawUrl = "";
+            try {
+                // 2. Adım: Dosya adını Base64 formatından düz metne (URL'ye) dönüştür
+                gistRawUrl = decodeURIComponent(escape(atob(fileNameWithoutExt)));
+            } catch(base64Err) {
+                console.warn("Dosya adı geçerli bir Base64 kodu içermiyor:", base64Err);
+                document.getElementById('vTitle').innerText = "⚠️ URL Çözülemedi";
+                document.getElementById('vTitle').style.color = "var(--danger)";
+                document.getElementById('vBody').innerText = "Bu dosya adı geçerli bir Base64 şifrelemesi içermiyor veya hatalı kodlanmış. Sürüm notları yüklenemedi.";
+                if(device) document.getElementById('upBtn').style.display = 'block';
+                return;
+            }
+            
             document.getElementById('vTitle').innerText = "⏳ Sürüm notları getiriliyor...";
             
-            // GITHUB GIST RAW LINKINI BURAYA YAPISTIRIN:
-            const gistRawUrl = "Buraya_Gist_RAW_Linkini_Yapistirin"; 
-            
+            // 3. Adım: Çözülen Gist URL'sinden JSON verisini çek
             try {
                 const response = await fetch(gistRawUrl);
-                
                 if (!response.ok) throw new Error("Ağ yanıtı başarılı değil.");
                 
                 const data = await response.json();
@@ -367,7 +383,7 @@
                 console.warn("Sürüm notları yüklenemedi:", e);
                 document.getElementById('vTitle').innerText = "⚠️ Sürüm Notları Okunamadı";
                 document.getElementById('vTitle').style.color = "var(--danger)";
-                document.getElementById('vBody').innerText = "Ağ hatası veya yanlış bağlantı nedeniyle sürüm notları getirilemedi. Ancak güncelleme işleminize devam edebilirsiniz.";
+                document.getElementById('vBody').innerText = "Çözülen URL üzerinden verilere ulaşılamadı. Gist linkinin herkese açık (public) ve RAW formatında olduğundan emin olun.";
             }
 
             if(device) document.getElementById('upBtn').style.display = 'block';
