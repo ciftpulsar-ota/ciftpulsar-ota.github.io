@@ -152,6 +152,10 @@
             cursor: pointer;
             margin-bottom: 16px;
             transition: all 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
         }
 
         .drop-zone:hover {
@@ -159,10 +163,17 @@
             background: #0b1120;
         }
 
+        /* Uzun isimlerin taşmasını önleyen ve üç nokta koyan güncellenmiş kısım */
         .drop-zone-text {
             font-size: 13px;
             color: var(--text-secondary);
             transition: color 0.2s ease;
+            display: block;
+            width: 100%;
+            max-width: 380px; /* Kutunun iç genişliğine göre sınırlandırıldı */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         input[type="file"] {
@@ -339,7 +350,6 @@
         }
     }
 
-    // Dosya adından dinamik olarak Base64 çözen fonksiyon
     async function onFileSelect() {
         const inp = document.getElementById('fileInp');
         if(inp.files.length > 0) {
@@ -352,12 +362,10 @@
             document.getElementById('versionMenu').style.display = 'block';
             document.getElementById('vTitle').innerText = "⏳ Dosya adı çözülüyor...";
 
-            // 1. Adım: Dosya adından .bin uzantısını dinamik olarak ayır
             const fileNameWithoutExt = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
             
             let gistRawUrl = "";
             try {
-                // 2. Adım: Dosya adını Base64 formatından düz metne (URL'ye) dönüştür
                 gistRawUrl = decodeURIComponent(escape(atob(fileNameWithoutExt)));
             } catch(base64Err) {
                 console.warn("Dosya adı geçerli bir Base64 kodu içermiyor:", base64Err);
@@ -370,7 +378,6 @@
             
             document.getElementById('vTitle').innerText = "⏳ Sürüm notları getiriliyor...";
             
-            // 3. Adım: Çözülen Gist URL'sinden JSON verisini çek
             try {
                 const response = await fetch(gistRawUrl);
                 if (!response.ok) throw new Error("Ağ yanıtı başarılı değil.");
