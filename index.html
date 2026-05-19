@@ -14,81 +14,489 @@
             --text-secondary: #9ca3af;
             --text-muted: #6b7280;
             --accent-cyan: #06b6d4;
+            --accent-purple: #8b5cf6;
             --success: #10b981;
+            --danger: #ef4444;
+            --panel-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
         }
 
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-main); color: var(--text-primary); margin: 0; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
-        .terminal-container { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; padding: 32px; width: 100%; max-width: 480px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); }
-        .logo-wrapper { width: 100%; margin-bottom: 24px; display: flex; justify-content: center; }
-        .logo-wrapper img { width: 100%; max-height: 120px; object-fit: contain; }
-        .header-group { text-align: center; margin-bottom: 28px; }
-        h1 { font-size: 20px; margin: 0 0 6px 0; }
-        .subtitle { font-size: 13px; color: var(--text-secondary); }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .terminal-container {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 32px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: var(--panel-shadow);
+        }
+
+        .logo-wrapper {
+            width: 100%;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo-wrapper img {
+            width: 100%;
+            height: auto;
+            max-height: 180px;
+            object-fit: contain;
+        }
+
+        .header-group {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        h1 {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            margin: 0 0 6px 0;
+            color: var(--text-primary);
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        /* Endüstriyel Mod Seçim Segmenti */
+        .segment-control {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: #030712;
+            padding: 4px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .segment-btn {
+            background: transparent;
+            border: none;
+            outline: none;
+            padding: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .segment-btn.active.quick {
+            background: rgba(6, 182, 212, 0.15);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+
+        .segment-btn.active.eff {
+            background: rgba(139, 92, 246, 0.15);
+            color: var(--accent-purple);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        /* Butonlar */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: #1f2937;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .btn:hover {
+            background: #374151;
+            border-color: #4b5563;
+        }
+
+        .btn.connected {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            border-color: rgba(16, 185, 129, 0.4);
+            cursor: default;
+        }
         
-        .btn { display: block; width: 100%; padding: 14px; background: #1f2937; border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; cursor: pointer; text-align: center; margin-bottom: 15px; }
-        .btn-trigger { background: #2563eb; color: #ffffff; border: none; }
-        .btn.connected { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+        .btn.connected:hover {
+            background: rgba(16, 185, 129, 0.15);
+        }
+
+        /* Sürükle-Bırak / Dosya Seçim Alanı */
+        .drop-zone {
+            border: 1px dashed var(--border-color);
+            background: #030712;
+            padding: 24px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .drop-zone:hover {
+            border-color: var(--border-focus);
+            background: #0b1120;
+        }
+
+        .drop-zone-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+            transition: color 0.2s ease;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Tetikleme Butonu */
+        .btn-trigger {
+            background: #2563eb;
+            color: #ffffff;
+            border: none;
+            margin-bottom: 0;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-trigger:hover {
+            background: #1d4ed8;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+        }
+
+        /* Versiyon Notları Menü Alanı (Birleştirilmiş & İyileştirilmiş) */
+        .version-menu {
+            display: none;
+            margin-bottom: 16px;
+            background: #070b12;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: border-color 0.2s ease;
+        }
         
-        .drop-zone { border: 1px dashed var(--border-color); background: #030712; padding: 24px; border-radius: 8px; text-align: center; cursor: pointer; margin: 16px 0; }
+        .version-menu:hover {
+            border-color: #374151;
+        }
+
+        .version-header {
+            padding: 14px 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #111827;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            user-select: none;
+        }
         
-        .version-menu { display: none; margin-bottom: 20px; background: #070b12; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
-        .version-header { padding: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: #111827; font-size: 13px; font-weight: 600; color: var(--accent-cyan); }
-        .version-body { padding: 12px; font-size: 12px; color: var(--text-secondary); display: none; white-space: pre-line; border-top: 1px solid var(--border-color); }
-        
-        .progress-container { display: none; margin-top: 20px; background: #030712; padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); }
-        .progress-bar-bg { background: #1f2937; border-radius: 99px; height: 6px; width: 100%; overflow: hidden; }
-        .progress-bar-fill { background: var(--border-focus); width: 0%; height: 100%; transition: width 0.1s linear; }
-        .status-text { font-size: 11px; margin-top: 10px; color: var(--text-muted); font-family: monospace; }
+        .version-header:hover {
+            background: #1f2937;
+        }
+
+        .version-header span.arrow {
+            font-size: 10px;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .version-body {
+            padding: 16px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: none;
+            white-space: pre-line;
+            line-height: 1.5;
+            border-top: 1px solid var(--border-color);
+            background: #030712;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* İlerleme Paneli */
+        .progress-container {
+            display: none;
+            margin-top: 16px;
+            background: #030712;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .progress-bar-bg {
+            background: #1f2937;
+            border-radius: 99px;
+            height: 6px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .progress-bar-fill {
+            background: var(--accent-cyan);
+            width: 0%;
+            height: 100%;
+            transition: width 0.15s linear;
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+        }
+
+        .status-text {
+            font-size: 12px;
+            margin-top: 12px;
+            color: var(--text-muted);
+            text-align: left;
+            font-family: monospace;
+        }
     </style>
 </head>
 <body>
 
 <div class="terminal-container">
-    <div class="logo-wrapper"><img src="pulsar-logo.png" alt="Logo"></div>
+    <!-- Logo Alanı -->
+    <div class="logo-wrapper">
+        <img src="pulsar-logo.png" alt="Çift Pulsar Logo" onerror="this.style.display='none'">
+    </div>
+    
+    <!-- Başlık -->
     <div class="header-group">
         <h1>ÇİFT PULSAR v2</h1>
         <p class="subtitle">BLE Firmware Güncelleme Terminali</p>
     </div>
 
+    <!-- Mod Seçimi -->
+    <div class="segment-control">
+        <button class="segment-btn active quick" id="mQ" onclick="toggleMode('QUICK')">HIZLI MOD (480B)</button>
+        <button class="segment-btn" id="mE" onclick="toggleMode('EFFICIENT')">GÜVENLİ MOD (64B)</button>
+    </div>
+
+    <!-- Bağlantı Butonu -->
     <button class="btn" id="connBtn" onclick="initBluetooth()">Cihaza Bağlan</button>
 
+    <!-- Dosya Seçim Alanı -->
     <div class="drop-zone" onclick="document.getElementById('fileInp').click()">
         <span id="fileTxt" class="drop-zone-text">Firmware (.bin) dosyasını seçin</span>
         <input type="file" id="fileInp" accept=".bin" onchange="onFileSelect()">
     </div>
 
+    <!-- Dinamik Sürüm Notları (JSON Destekli Accordion) -->
     <div class="version-menu" id="versionMenu">
         <div class="version-header" onclick="toggleDetails()">
-            <span id="vTitle">Sürüm Bilgileri Yükleniyor...</span>
-            <span>▼</span>
+            <span id="vTitle">ℹ️ Sürüm Bilgileri Aranıyor...</span>
+            <span class="arrow" id="vArrow">▼</span>
         </div>
-        <div class="version-body" id="vBody"></div>
+        <div class="version-body" id="vBody">Veriler yükleniyor, lütfen bekleyin...</div>
     </div>
 
+    <!-- Güncellemeyi Başlat Butonu -->
     <button class="btn btn-trigger" id="upBtn" onclick="pushUpdate()" style="display: none;">GÜNCELLEMEYİ BAŞLAT</button>
 
+    <!-- İlerleme Çubuğu -->
     <div class="progress-container" id="progBox">
-        <div class="progress-bar-bg"><div class="progress-bar-fill" id="bar"></div></div>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="bar"></div>
+        </div>
         <div id="status" class="status-text">Bağlantı kararlı, dosya bekleniyor...</div>
     </div>
 </div>
 
 <script>
+    // Bluetooth Servis ID'leri
     const S_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
     const C_DATA = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
     const C_CTRL = "e32ee5ee-ca2a-4124-a69c-f9964ca72412";
-    let device = null, dChar = null, cChar = null, file = null;
 
-    function toggleDetails() {
-        const b = document.getElementById('vBody');
-        b.style.display = (b.style.display === 'block') ? 'none' : 'block';
+    let device = null, dChar = null, cChar = null, file = null, mode = 'QUICK';
+
+    // UI: Mod Değişimi
+    function toggleMode(m) {
+        mode = m;
+        document.getElementById('mQ').classList.toggle('active', m === 'QUICK');
+        document.getElementById('mE').classList.toggle('active', m === 'EFFICIENT');
+        document.getElementById('mQ').classList.toggle('quick', m === 'QUICK');
+        document.getElementById('mE').classList.toggle('eff', m === 'EFFICIENT');
     }
 
+    // UI: Sürüm Detayları (Accordion) Animasyonu
+    function toggleDetails() {
+        const body = document.getElementById('vBody');
+        const arrow = document.getElementById('vArrow');
+        
+        if (body.style.display === 'block') {
+            body.style.display = 'none';
+            arrow.style.transform = 'rotate(0deg)';
+        } else {
+            body.style.display = 'block';
+            arrow.style.transform = 'rotate(180deg)';
+        }
+    }
+
+    // Dosya Seçimi ve JSON Fetch İşlemi
     async function onFileSelect() {
         const inp = document.getElementById('fileInp');
         if(inp.files.length > 0) {
             file = inp.files[0];
-            document.getElementById('fileTxt').innerText = `${file.name} [${Math.round(file.size/1024)} KB]`;
             
-            // Buraya kendi Pastebin RAW linkini yapıştır
-            const pastebinRawUrl = "https://pastebin.com/raw/SENIN_PASTE_IDN";
+            // UI Güncelleme (Dosya İsmi ve Boyutu)
+            const fText = document.getElementById('fileTxt');
+            fText.innerText = `${file.name} [${Math.round(file.size/1024)} KB]`;
+            fText.style.color = "var(--accent-cyan)";
+            
+            // Versiyon Menüsünü Görünür Yap ve Yükleniyor Durumu Ver
+            document.getElementById('versionMenu').style.display = 'block';
+            document.getElementById('vTitle').innerText = "⏳ Sürüm notları getiriliyor...";
+            
+            // JSON Çekme İşlemi (CORS veya Hata İhtimalleri İçin Try-Catch)
+            const pastebinRawUrl = "https://pastebin.com/raw/SENIN_PASTE_IDN"; // ID'yi Buraya Yazın
+            
+            try {
+                const response = await fetch(pastebinRawUrl);
+                
+                if (!response.ok) throw new Error("Ağ yanıtı başarılı değil.");
+                
+                const data = await response.json();
+                
+                document.getElementById('vTitle').innerText = data.Guncelleme_Baslik || "Güncelleme Notları";
+                document.getElementById('vBody').innerText = data.Guncelleme_Detay || "Detay bulunamadı.";
+            } catch (e) {
+                console.warn("Sürüm notları yüklenemedi:", e);
+                // Hata durumunda arayüzün bozulmaması için yedek metin
+                document.getElementById('vTitle').innerText = "⚠️ Sürüm Notları Okunamadı";
+                document.getElementById('vTitle').style.color = "var(--danger)";
+                document.getElementById('vBody').innerText = "Ağ hatası veya Pastebin erişim kısıtlaması (CORS) nedeniyle sürüm notları getirilemedi. Ancak güncelleme işleminize devam edebilirsiniz.";
+            }
+
+            // Eğer cihaz bağlıysa Başlat butonunu göster
+            if(device) document.getElementById('upBtn').style.display = 'block';
+        }
+    }
+
+    // Bluetooth Bağlantı İşlemi
+    async function initBluetooth() {
+        const statusText = document.getElementById('status');
+        const connBtn = document.getElementById('connBtn');
+        const progBox = document.getElementById('progBox');
+        
+        try {
+            progBox.style.display = 'block';
+            statusText.innerText = "CiftPulsar cihazları aranıyor...";
+            
+            device = await navigator.bluetooth.requestDevice({
+                filters: [{ namePrefix: 'CiftPulsar' }],
+                optionalServices: [S_UUID]
+            });
+            
+            const server = await device.gatt.connect();
+            const service = await server.getPrimaryService(S_UUID);
+            dChar = await service.getCharacteristic(C_DATA);
+            cChar = await service.getCharacteristic(C_CTRL);
+
+            connBtn.innerText = "Cihaz Bağlantısı Sağlandı ✓";
+            connBtn.className = "btn connected";
+            statusText.innerText = "Cihaz hazır. Dosya seçimi yapın.";
+            
+            if(file) document.getElementById('upBtn').style.display = 'block';
+        } catch (err) {
+            progBox.style.display = 'block';
+            statusText.innerText = "Bağlantı Hatası: " + err.message;
+            statusText.style.color = "var(--danger)";
+        }
+    }
+
+    // Firmware Güncelleme (Veri Gönderme)
+    async function pushUpdate() {
+        if(!file || !cChar || !dChar) return;
+        
+        document.getElementById('progBox').style.display = 'block';
+        document.getElementById('upBtn').style.display = 'none';
+        
+        const statusText = document.getElementById('status');
+        const barFill = document.getElementById('bar');
+        
+        // Mod rengine göre ilerleme çubuğu rengini ayarla
+        barFill.style.background = mode === 'QUICK' ? "var(--accent-cyan)" : "var(--accent-purple)";
+
+        // Hazırlık Paketi (Control Char)
+        const obfuscatedName = btoa(unescape(encodeURIComponent(file.name)));
+        const startPacket = `START:${obfuscatedName}:${file.size}:${mode}:`;
+        await cChar.writeValueWithResponse(new TextEncoder().encode(startPacket));
+
+        // Dosyayı Oku ve Gönder
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            const buffer = new Uint8Array(e.target.result);
+            const chunkSize = (mode === 'QUICK') ? 480 : 64;
+            let pointer = 0;
+
+            statusText.style.color = "var(--text-muted)"; // Rengi normale al (önceki hatalardan kalma ihtimaline karşı)
+
+            while(pointer < buffer.length) {
+                const chunk = buffer.slice(pointer, pointer + chunkSize);
+                
+                try {
+                    if(mode === 'QUICK') {
+                        await dChar.writeValueWithoutResponse(chunk);
+                    } else {
+                        await dChar.writeValueWithResponse(chunk);
+                    }
+                } catch(err) {
+                    statusText.innerText = "Transfer Kesintiye Uğradı!";
+                    statusText.style.color = "var(--danger)";
+                    return;
+                }
+
+                pointer += chunkSize;
+                const progress = Math.min(100, Math.round((pointer / buffer.length) * 100));
+                
+                barFill.style.width = progress + '%';
+                statusText.innerText = `Veri transferi: %${progress}`;
+                
+                // Hızlı Mod Gecikmesi
+                if(mode === 'QUICK') await new Promise(r => setTimeout(r, 2));
+            }
+
+            statusText.innerText = "Veri aktarıldı. Bütünlük doğrulanıyor...";
+            try {
+                await cChar.writeValueWithResponse(new TextEncoder().encode("END"));
+                statusText.innerText = "Güncelleme Başarıyla Tamamlandı! ✓";
+                statusText.style.color = "var(--success)";
+                barFill.style.background = "var(--success)";
+            } catch(err) {
+                statusText.innerText = "Bütünlük doğrulaması reddedildi!";
+                statusText.style.color = "var(--danger)";
+            }
+        };
+        reader.readAsArrayBuffer(file);
+    }
+</script>
+</body>
+</html>
