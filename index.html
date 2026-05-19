@@ -210,6 +210,50 @@
             text-align: left;
             font-family: monospace;
         }
+
+        /* Sürüm Notları Menü Alanı (Yeni Eklenen) */
+        .version-menu {
+            display: none;
+            margin-top: 16px;
+            background: #070b12;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 14px;
+        }
+
+        .version-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin: 0 0 8px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .version-link-btn {
+            display: inline-block;
+            width: 100%;
+            padding: 10px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #60a5fa;
+            text-decoration: none;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 6px;
+            box-sizing: border-box;
+            transition: all 0.15s ease;
+        }
+
+        .version-link-btn:hover {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: var(--border-focus);
+            color: #ffffff;
+        }
     </style>
 </head>
 <body>
@@ -234,6 +278,11 @@
     <div class="drop-zone" onclick="document.getElementById('fileInp').click()">
         <span id="fileTxt" class="drop-zone-text">Firmware (.bin) dosyasını seçin</span>
         <input type="file" id="fileInp" accept=".bin" onchange="onFileSelect()">
+    </div>
+
+    <div class="version-menu" id="versionMenu">
+        <div class="version-title">ℹ️ Sürüm Bilgileri Algılandı</div>
+        <a href="#" id="pastebinLink" target="_blank" class="version-link-btn">Pastebin Sürüm Notlarını Aç</a>
     </div>
 
     <button class="btn btn-trigger" id="upBtn" onclick="pushUpdate()" style="display: none;">GÜNCELLEMEYİ BAŞLAT</button>
@@ -267,6 +316,17 @@
             file = inp.files[0];
             document.getElementById('fileTxt').innerText = `${file.name} [${Math.round(file.size/1024)} KB]`;
             document.getElementById('fileTxt').style.color = "var(--accent-cyan)";
+            
+            // Dosya adını Base64 formatına çevirip Pastebin url yapısı ile menüye bağlıyoruz
+            const base64FileName = btoa(unescape(encodeURIComponent(file.name)));
+            const pLink = document.getElementById('pastebinLink');
+            
+            // Üretilen Base64 kodunu Pastebin query stringine veya özel alt dizinine parametre geçiyoruz
+            pLink.href = `https://pastebin.com/index.php?version=${base64FileName}`;
+            
+            // Sürüm menüsünü görünür hale getiriyoruz
+            document.getElementById('versionMenu').style.display = 'block';
+            
             if(device) document.getElementById('upBtn').style.display = 'block';
         }
     }
